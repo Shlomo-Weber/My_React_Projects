@@ -133,6 +133,27 @@ const filtersReducer = (state = filtersReducerDefaultState, action) =>{
     }
 }
 
+// Timestamps
+// January 1st 1970 (unix epoch)
+
+// Get visible expenses
+const getVisibleExpenses = (expenses, {text, sortBy, startDate, endDate})=>{
+    return expenses.filter((expense)=>{
+        const startDateMatch = typeof startDate !== 'number' || expense.createdAt >= startDate
+        const endDateMatch = typeof endDate !== 'number' || expense.createdAt <=endDate
+        const textMatch = expense.description.toLowerCase().includes(text.toLowerCase())
+
+        return startDateMatch && endDateMatch && textMatch
+    }).sort((a,b)=>{
+        if (sortBy === 'date'){
+            return a.createdAt < b.createdAt ? 1 :-1
+        }
+        else if (sortBy ==='amount'){
+            return a.amount < b.amount ? 1 :-1
+        }
+    })
+}
+
 // Store creation 
 
 const store = createStore(
@@ -140,28 +161,26 @@ const store = createStore(
         expenses: expensesReducer,
         filters: filtersReducer
     })
-    )
+)
 
 store.subscribe(()=>{
-    console.log(store.getState())
-    console.log('running')
+    const state = store.getState();
+    const visibleExpenses = getVisibleExpenses(state.expenses, state.filters)
+    console.log(visibleExpenses)
 })
 
-const expenseOne = store.dispatch(addExpense({ description: 'Rent', amount: 100 }));
-const expenseTwo = store.dispatch(addExpense({ description: 'Coffee', amount: 200 }));
+const expenseOne = store.dispatch(addExpense({ description: 'Rent', amount: 300, createdAt: -1500 }));
+const expenseTwo = store.dispatch(addExpense({ description: 'Coffee', amount: 500, createdAt: -1000 }));
 
-store.dispatch(setTextFilter('derp'))
+store.dispatch(setTextFilter('e'))
 // store.dispatch(sortByDate()) // date
 store.dispatch(sortByAmount()) // amount
-store.dispatch(removeExpense({id: expenseOne.expense.id }))
+// store.dispatch(removeExpense({id: expenseOne.expense.id }))
 
-store.dispatch(editExpense(expenseTwo.expense.id, { amount: 500, description:'herpderp' }))
+// store.dispatch(editExpense(expenseTwo.expense.id, { amount: 500, description:'herpderp' }))
 
-store.dispatch(setStartDate(125))
-store.dispatch(setEndDate(1250))
-store.dispatch(setEndDate())
-store.dispatch(setStartDate(354))
-store.dispatch(setStartDate(387))
+// store.dispatch(setStartDate(100))
+// store.dispatch(setEndDate(1001))
 
 
 const demoState = {
