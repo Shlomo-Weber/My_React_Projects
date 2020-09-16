@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render the NotFound Page 1`] = `
+<div>
+  <h1
+    style={
+      Object {
+        "marginTop": "150px",
+        "textAlign": "center",
+      }
+    }
+  >
+    404! This page does not exist
+  </h1>
+  <Link
+    style={
+      Object {
+        "paddingLeft": "870px",
+      }
+    }
+    to="/"
+  >
+    Go to the Home Page
+  </Link>
+</div>
+`;
